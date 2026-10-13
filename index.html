@@ -1,0 +1,86 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>دوري مدارس المجد الحديثة الخاصة</title><style>
+:root{--panel:#102437;--gold:#f3c969;--green:#27ae70;--text:#f4f7fb;--muted:#a9bac9;--line:#294257}*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#081522,#0b2030 60%,#102b32);font-family:Tahoma,Arial,sans-serif;color:var(--text);line-height:1.65}header{text-align:center;padding:25px 14px;background:radial-gradient(ellipse at top,#1b4052,transparent 72%)}h1{color:var(--gold);font-size:clamp(23px,5vw,35px);margin:4px 0}.author-title{font-size:clamp(18px,4vw,26px);font-weight:bold;margin:10px 0 4px}.muted,.notice{color:var(--muted);font-size:13px}.wrap{width:min(1000px,94%);margin:auto auto 35px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.tab,button{border:0;border-radius:10px;padding:11px 14px;font:inherit;font-weight:bold;cursor:pointer}.tab{background:#173146;color:#fff;border:1px solid var(--line);padding:14px 5px}.tab.active{background:var(--gold);color:#172230}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin:13px 0;box-shadow:0 10px 28px #0002}h2{font-size:20px;color:var(--gold);margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.stat{background:#142d42;border-radius:11px;padding:12px}.stat strong{display:block;font-size:25px;color:var(--gold)}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:center;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--gold)}.match{display:grid;grid-template-columns:90px 1fr auto;gap:9px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.date{font-size:12px;color:var(--muted)}.teams{font-weight:bold}.score{font-size:18px;color:var(--gold);white-space:nowrap}input,select{font:inherit;width:100%;background:#091a28;color:#fff;border:1px solid #355168;border-radius:8px;padding:9px}label{display:block;color:var(--muted);font-size:13px;margin:8px 0 4px}.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.primary{background:var(--green);color:white}.secondary{background:#27465e;color:white}.danger{background:#9e343b;color:white}.btn-sm{padding:4px 8px;font-size:12px;border-radius:6px;margin:0 2px}.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:13px;padding:18px}.status{padding:9px 12px;border-radius:9px;background:#142d42;margin:10px 0;font-size:13px}@media(max-width:520px){.match{grid-template-columns:68px 1fr auto;gap:6px}.teams{font-size:13px}.card{padding:12px}}
+</style></head><body><header><div style="font-size:40px">⚽ 🏆 ⚽</div><h1>دوري مدارس المجد الحديثة الخاصة</h1><div class="author-title">عمل كابتن مدحت محمد أبو النيل</div></header><main class="wrap">
+<div class="tabs"><button id="tab-primary" class="tab active" onclick="setDiv('primary')">🏆 دوري الابتدائي</button><button id="tab-prep" class="tab" onclick="setDiv('prep')">🏆 دوري الإعدادي</button></div><div id="connection-status" class="status">جاري الاتصال بقاعدة البيانات...</div>
+<section class="card"><div class="grid"><div class="stat">عدد الفرق<strong id="team-count">5</strong></div><div class="stat">عدد المباريات<strong id="match-count">10</strong></div><div class="stat">المباريات المنتهية<strong id="played-count">0</strong></div></div></section>
+<section class="card"><h2>📊 جدول الترتيب</h2><div class="scroll"><table><thead><tr><th>م</th><th>الفريق</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>له</th><th>عليه</th><th>الفارق</th><th>النقاط</th></tr></thead><tbody id="standings"></tbody></table></div><p class="notice">الفوز 3 نقاط، التعادل نقطة لكل فريق.</p></section>
+<section class="card"><h2>🗓️ جدول المباريات والنتائج</h2><div id="fixtures"></div></section><section class="card"><h2>🥅 الهدافون</h2><div class="scroll"><table><thead><tr><th>م</th><th>اسم اللاعب</th><th>الفريق</th><th>الأهداف</th></tr></thead><tbody id="scorers"></tbody></table></div></section>
+<section class="card"><h2>🔐 لوحة المسؤول</h2><div id="login-box"><p class="notice">سجّل الدخول بحساب المسؤول المعتمد في Firebase.</p><label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="username"><label>كلمة مرور Firebase</label><input id="password" type="password" autocomplete="current-password"><button class="primary" style="margin-top:10px" onclick="login()">دخول المسؤول</button></div>
+<div id="admin" class="hidden"><h3>تعديل نتيجة مباراة</h3><div class="form"><div><label>المباراة</label><select id="match-select" onchange="fillScore()"></select></div><div><label>أهداف الفريق الأول</label><input id="score-a" type="number" min="0" step="1"></div><div><label>أهداف الفريق الثاني</label><input id="score-b" type="number" min="0" step="1"></div></div><button class="primary" style="margin-top:10px" onclick="saveScore()">حفظ النتيجة</button> <button class="secondary" onclick="clearScore()">مسح النتيجة</button><hr style="border-color:var(--line);margin:18px 0"><h3>إضافة أو تعديل هداف</h3><div class="form"><div><label>اسم اللاعب</label><input id="player-name"></div><div><label>الفريق</label><select id="player-team"></select></div><div><label>إجمالي الأهداف</label><input id="player-goals" type="number" min="1" value="1"></div></div><button class="primary" style="margin-top:10px" onclick="saveScorer()">حفظ الهداف</button><div style="margin-top:15px"><h4>قائمة الهدافين:</h4><div class="scroll"><table><thead><tr><th>اللاعب</th><th>الفريق</th><th>الأهداف</th><th>إجراء</th></tr></thead><tbody id="admin-scorers"></tbody></table></div></div><hr style="border-color:var(--line);margin:18px 0"><button class="secondary" onclick="backup()">تنزيل نسخة احتياطية</button><label>استعادة نسخة JSON</label><input type="file" accept="application/json,.json" onchange="restore(event)"><button class="danger" style="margin-top:10px" onclick="logout()">تسجيل الخروج</button></div></section></main><footer>دوري مدارس المجد الحديثة الخاصة · بالتوفيق لجميع الفرق 🌟</footer>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc,onSnapshot}from"https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyB-Yi_NP8vGHM0mbae58XYqYNRh4Yj-pFg",authDomain:"almajd-school-league.firebaseapp.com",projectId:"almajd-school-league",storageBucket:"almajd-school-league.firebasestorage.app",messagingSenderId:"53054388478",appId:"1:53054388478:web:85766cf654496edc5f8daf"};
+const ADMIN_UID="mbRvNJ6QWwhqUGKbq3RtmkVQJgD3",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),leagueRef=doc(db,"league","main");
+const teams={primary:['خامسة ثالث','سادسة تاني','سادسة أول','خامسة تاني','رابعة أول'],prep:['أولى أول إعدادي','أولى تالت إعدادي','تانية أول إعدادي','تانية تالت إعدادي','تالتة أول إعدادي','تالتة تالت إعدادي']};
+const fixtures={
+primary:[
+['2026-10-12','خامسة ثالث','سادسة تاني'],
+['2026-10-13','سادسة أول','خامسة تاني'],
+['2026-10-14','رابعة أول','خامسة ثالث'],
+['2026-10-15','خامسة تاني','رابعة أول'],
+['2026-10-18','سادسة تاني','سادسة أول'],
+['2026-10-19','خامسة ثالث','خامسة تاني'],
+['2026-10-20','سادسة أول','رابعة أول'],
+['2026-10-21','سادسة تاني','خامسة تاني'],
+['2026-10-22','خامسة ثالث','سادسة أول'],
+['2026-10-25','رابعة أول','سادسة تاني']
+],
+prep:[
+['2026-10-12',0,1],
+['2026-10-13',2,3],
+['2026-10-14',4,5],
+['2026-10-15',0,2],
+['2026-10-18',1,3],
+['2026-10-19',4,0],
+['2026-10-20',2,5],
+['2026-10-21',1,4],
+['2026-10-22',2,4],
+['2026-10-25',0,5],
+['2026-10-26',1,2],
+['2026-10-27',3,4],
+['2026-10-28',0,3],
+['2026-10-29',1,5],
+['2026-11-01',2,1]
+]};
+function fresh(){let o={};for(let d of ['primary','prep'])o[d]={teams:[...teams[d]],matches:fixtures[d].map((x,i)=>({id:d[0]+i,date:x[0],a:typeof x[1]==='number'?teams[d][x[1]]:x[1],b:typeof x[2]==='number'?teams[d][x[2]]:x[2],sa:null,sb:null})),scorers:[]};return o}
+let data=fresh(),division='primary',isAdmin=false;
+const $=id=>document.getElementById(id),setStatus=s=>$('connection-status').textContent=s;
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateText(s){let[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'numeric'})}
+function normalize(x){
+ let b=fresh();if(!x)return b;
+ for(let d of ['primary','prep']){
+  if(x[d]){
+   const oldMatches=Array.isArray(x[d].matches)?x[d].matches:[];
+   b[d].matches=b[d].matches.map(m=>{
+    const old=oldMatches.find(o=>o&&o.date===m.date&&((o.a===m.a&&o.b===m.b)||(o.a===m.b&&o.b===m.a)));
+    if(!old)return m;
+    const sameOrder=old.a===m.a;
+    return {...m,sa:Number.isInteger(old.sa)&&old.sa>=0?(sameOrder?old.sa:old.sb):null,sb:Number.isInteger(old.sb)&&old.sb>=0?(sameOrder?old.sb:old.sa):null};
+   });
+   b[d].scorers=Array.isArray(x[d].scorers)?x[d].scorers.filter(s=>s&&typeof s.name==='string'&&b[d].teams.includes(s.team)&&Number.isInteger(s.goals)&&s.goals>0).map(s=>({name:s.name,team:s.team,goals:s.goals})):[];
+  }
+ }
+ return b
+}
+function stats(){let o={};data[division].teams.forEach(t=>o[t]={team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});for(let m of data[division].matches){if(m.sa===null||m.sb===null)continue;let a=o[m.a],b=o[m.b];a.p++;b.p++;a.gf+=m.sa;a.ga+=m.sb;b.gf+=m.sb;b.ga+=m.sa;if(m.sa>m.sb){a.w++;b.l++;a.pts+=3}else if(m.sa<m.sb){b.w++;a.l++;b.pts+=3}else{a.d++;b.d++;a.pts++;b.pts++}}return Object.values(o).sort((a,b)=>b.pts-a.pts||((b.gf-b.ga)-(a.gf-a.ga))||b.gf-a.gf)}
+function render(){let d=data[division];$('team-count').textContent=d.teams.length;$('match-count').textContent=d.matches.length;$('played-count').textContent=d.matches.filter(m=>m.sa!==null&&m.sb!==null).length;$('standings').innerHTML=stats().map((s,i)=>`<tr><td>${i+1}</td><td style="text-align:right;font-weight:bold">${esc(s.team)}</td><td>${s.p}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td><td>${s.gf}</td><td>${s.ga}</td><td>${s.gf-s.ga}</td><td><b>${s.pts}</b></td></tr>`).join('');$('fixtures').innerHTML=d.matches.map((m,i)=>`<div class="match"><div><div class="date">${dateText(m.date)}</div><div class="date">مباراة ${i+1}</div></div><div class="teams">${esc(m.a)}<br><span class="muted">ضد</span><br>${esc(m.b)}</div><div class="score">${m.sa===null?'—':m.sa+' : '+m.sb}</div></div>`).join('');let ss=[...d.scorers].sort((a,b)=>b.goals-a.goals);$('scorers').innerHTML=ss.length?ss.map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.name)}</td><td>${esc(s.team)}</td><td>${s.goals}</td></tr>`).join(''):'<tr><td colspan="4" class="muted">لم تتم إضافة هدافين حتى الآن</td></tr>';let sel=$('match-select'),old=sel.value;sel.innerHTML=d.matches.map((m,i)=>`<option value="${m.id}">م${i+1} · ${dateText(m.date)} · ${esc(m.a)} × ${esc(m.b)}</option>`).join('');if([...sel.options].some(o=>o.value===old))sel.value=old;$('player-team').innerHTML=d.teams.map(t=>`<option>${esc(t)}</option>`).join('');fillScore();renderAdminScorers()}
+function renderAdminScorers(){let s=data[division].scorers;$('admin-scorers').innerHTML=s.length?s.map((x,i)=>`<tr><td>${esc(x.name)}</td><td>${esc(x.team)}</td><td>${x.goals}</td><td><button class="primary btn-sm" onclick="editScorer(${i})">تعديل</button><button class="danger btn-sm" onclick="deleteScorer(${i})">حذف</button></td></tr>`).join(''):'<tr><td colspan="4" class="muted">لا يوجد هدافون</td></tr>'}
+window.setDiv=d=>{division=d;$('tab-primary').classList.toggle('active',d==='primary');$('tab-prep').classList.toggle('active',d==='prep');render()};
+window.fillScore=()=>{let m=data[division].matches.find(x=>x.id===$('match-select').value);$('score-a').value=m&&m.sa!==null?m.sa:'';$('score-b').value=m&&m.sb!==null?m.sb:''};
+async function saveRemote(){if(!isAdmin||auth.currentUser?.uid!==ADMIN_UID)throw Error('غير مصرح');await setDoc(leagueRef,data);setStatus('✅ تم الحفظ على الإنترنت وستظهر التحديثات للزوار.')}
+window.login=async()=>{let e=$('email').value.trim(),p=$('password').value;if(!e||!p)return alert('اكتب البريد الإلكتروني وكلمة المرور');try{let c=await signInWithEmailAndPassword(auth,e,p);if(c.user.uid!==ADMIN_UID){await signOut(auth);return alert('هذا الحساب غير مصرح له بالتعديل')}isAdmin=true;$('login-box').classList.add('hidden');$('admin').classList.remove('hidden');$('password').value='';let snap=await getDoc(leagueRef);if(snap.exists())data=normalize(snap.data());else await setDoc(leagueRef,data);render();setStatus('✅ تم تسجيل الدخول والاتصال بقاعدة البيانات.')}catch(err){console.error(err);alert('فشل الدخول أو الاتصال. راجع البريد وكلمة المرور وقواعد Firestore.')}}
+window.logout=async()=>{isAdmin=false;await signOut(auth);$('login-box').classList.remove('hidden');$('admin').classList.add('hidden');setStatus('أنت تتصفح الدوري كزائر.')};
+window.saveScore=async()=>{if(!isAdmin)return;let m=data[division].matches.find(x=>x.id===$('match-select').value),a=$('score-a').value,b=$('score-b').value;if(!m||a===''||b===''||!Number.isInteger(+a)||!Number.isInteger(+b)||+a<0||+b<0)return alert('اكتب نتيجتين صحيحتين');let old=[m.sa,m.sb];m.sa=+a;m.sb=+b;try{await saveRemote();render();alert('تم حفظ النتيجة على الإنترنت')}catch(e){m.sa=old[0];m.sb=old[1];render();alert('تعذر الحفظ. تحقق من الاتصال وقواعد Firestore.')}}
+window.clearScore=async()=>{if(!isAdmin)return;let m=data[division].matches.find(x=>x.id===$('match-select').value);if(m&&confirm('مسح نتيجة المباراة؟')){let old=[m.sa,m.sb];m.sa=m.sb=null;try{await saveRemote();render()}catch(e){m.sa=old[0];m.sb=old[1];render();alert('تعذر الحفظ')}}};
+window.saveScorer=async()=>{if(!isAdmin)return;let name=$('player-name').value.trim(),team=$('player-team').value,goals=+$('player-goals').value;if(!name||!Number.isInteger(goals)||goals<1)return alert('اكتب الاسم وعدد أهداف صحيح');let old=structuredClone(data[division].scorers),s=data[division].scorers.find(x=>x.name===name&&x.team===team);if(s)s.goals=goals;else data[division].scorers.push({name,team,goals});try{await saveRemote();render();$('player-name').value='';alert('تم حفظ الهداف')}catch(e){data[division].scorers=old;render();alert('تعذر الحفظ')}};
+window.editScorer=i=>{let s=data[division].scorers[i];if(s){$('player-name').value=s.name;$('player-team').value=s.team;$('player-goals').value=s.goals}};
+window.deleteScorer=async i=>{if(!isAdmin||!confirm('حذف الهداف؟'))return;let old=data[division].scorers.splice(i,1);try{await saveRemote();render()}catch(e){data[division].scorers.splice(i,0,...old);render();alert('تعذر الحذف')}};
+window.backup=()=>{if(!isAdmin)return;let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='almajd-league-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+window.restore=ev=>{if(!isAdmin)return;let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=async()=>{try{data=normalize(JSON.parse(r.result));await saveRemote();render();alert('تم استرجاع النسخة وحفظها على الإنترنت')}catch(e){alert('النسخة غير صالحة أو تعذر الحفظ')}ev.target.value=''};r.readAsText(f)};
+onSnapshot(leagueRef,s=>{if(s.exists()){data=normalize(s.data());render();setStatus('✅ متصل بقاعدة البيانات؛ التحديثات تظهر تلقائيًا.')}else setStatus('قاعدة البيانات جاهزة. سجّل دخول المسؤول لإنشاء بيانات الدوري لأول مرة.')},e=>{console.error(e);setStatus('تعذر قراءة قاعدة البيانات. تأكد من نشر قواعد Firestore.')});
+onAuthStateChanged(auth,u=>{if(u&&u.uid===ADMIN_UID){isAdmin=true;$('login-box').classList.add('hidden');$('admin').classList.remove('hidden')}else{isAdmin=false;$('login-box').classList.remove('hidden');$('admin').classList.add('hidden')}});
+render();
+</script></body></html>
